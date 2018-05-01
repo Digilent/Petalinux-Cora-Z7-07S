@@ -1,8 +1,8 @@
-# Cora Z7-10 Petalinux BSP Project
+# Cora Z7-07S Petalinux BSP Project
 
 ## Built for Petalinux 2017.4
 
-This petalinux project targets the Vivado block diagram project found here: https://github.com/Digilent/Cora-Z7-10-base-linux.
+This petalinux project targets the Vivado block diagram project found here: https://github.com/Digilent/Cora-Z7-07S-base-linux.
 
 #### Warning: You should only use this repo when it is checked out on a release tag
 
@@ -51,6 +51,10 @@ ethaddr=xx:xx:xx:xx:xx:xx
 * It seems likely the XADC Wizard is no longer needed due to improvements made to the Xilinx XADC driver and petalinux. In a future release 
   it should be removed from the block diagram, and system-user.dtsi currently should be modified to target the node that is now generated 
   for the hard silicon XADC controller found in the Zynq PS. 
+* In order to fix Petalinux compatibility with the 07S device, a patch needs to be applied to the device-tree-generator recipe. The patch has
+  been added to the project as described in the Xilinx AR here: https://www.xilinx.com/support/answers/70402.html . This should not affect 
+  build process or runtime experience, however it is likely this patch can be removed once this project gets updated to a newer version of 
+  Petalinux.
 
 ## Quick-Start Guide
 
@@ -119,9 +123,9 @@ source /opt/pkg/petalinux/settings.sh
 There are two ways to obtain the project. If you plan on version controlling your project you should clone this repository using the following:
 
 ```
-git clone --recursive https://github.com/Digilent/Petalinux-Cora-Z7-10.git
+git clone --recursive https://github.com/Digilent/Petalinux-Cora-Z7-07S.git
 ```
-If you are not planning on version controlling your project and want a simpler release package, go to https://github.com/Digilent/Petalinux-Cora-Z7-10/releases/
+If you are not planning on version controlling your project and want a simpler release package, go to https://github.com/Digilent/Petalinux-Cora-Z7-07S/releases/
 and download the most recent .bsp file available there for the version of Petalinux you wish to use.
 
 
@@ -161,7 +165,7 @@ Run the following commands to build the petalinux project with the default optio
 
 ```
 petalinux-build
-petalinux-package --boot --force --fsbl images/linux/zynq_fsbl.elf --fpga images/linux/cora_z7_10_wrapper.bit --u-boot
+petalinux-package --boot --force --fsbl images/linux/zynq_fsbl.elf --fpga images/linux/system_wrapper.bit --u-boot
 ```
 
 ### Boot the newly built files from SD 
@@ -247,11 +251,11 @@ This section is only relevant for those who wish to upstream their work or versi
 Note the project should be released configured as initramfs for consistency, unless there is very good reason to release it with SD rootfs.
 
 ```
-petalinux-package --prebuilt --clean --fpga images/linux/cora_z7_10_wrapper.bit -a images/linux/image.ub:images/image.ub
+petalinux-package --prebuilt --clean --fpga images/linux/system_wrapper.bit -a images/linux/image.ub:images/image.ub
 echo "ethaddr=00:0a:35:00:1e:53" > pre-built/linux/images/uEnv.txt 
 petalinux-build -x distclean
 petalinux-build -x mrproper
-petalinux-package --bsp --force --output ../releases/Petalinux-Cora-Z7-10-20XX.X-X.bsp -p ./
+petalinux-package --bsp --force --output ../releases/Petalinux-Cora-Z7-07S-20XX.X-X.bsp -p ./
 cd ..
 git status # to double-check
 git add .

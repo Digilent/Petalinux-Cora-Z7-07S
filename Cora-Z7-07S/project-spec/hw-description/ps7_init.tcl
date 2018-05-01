@@ -793,11 +793,17 @@ proc ps7_debug {} {
         ps7_debug_3_0   
     }
 }
+
+proc ps7_apu_reset {} {
+   mask_write 0xF8000244 0x00000022 0x00000022
+}
 proc ps7_init {} {
     variable PCW_SILICON_VER_1_0
     variable PCW_SILICON_VER_2_0
     variable PCW_SILICON_VER_3_0
     set sil_ver [ps_version]
+
+	ps7_apu_reset
     if { $sil_ver == $PCW_SILICON_VER_1_0} {
             ps7_mio_init_data_1_0
             ps7_pll_init_data_1_0
